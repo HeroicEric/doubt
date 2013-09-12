@@ -18,6 +18,8 @@ gem 'coffee-rails', '~> 4.0.0'
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
 
+gem 'ember-rails', github: 'emberjs/ember-rails'
+
 gem 'anjlab-bootstrap-rails',
   require: 'bootstrap-rails',
   github: 'anjlab/bootstrap-rails'
