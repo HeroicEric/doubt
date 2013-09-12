@@ -24,7 +24,7 @@ group :doc do
 end
 
 group :development, :test do
-  gem 'minitest-rails'
+  gem 'minitest'
 end
 
 group :development do
