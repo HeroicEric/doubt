@@ -18,6 +18,10 @@ gem 'coffee-rails', '~> 4.0.0'
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
 
+gem 'anjlab-bootstrap-rails',
+  require: 'bootstrap-rails',
+  github: 'anjlab/bootstrap-rails'
+
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
   gem 'sdoc', require: false
