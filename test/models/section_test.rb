@@ -23,8 +23,8 @@ describe Section do
       @section.wont_be :valid?
     end
 
-    it "requires a lesson id" do
-      @section.lesson_id = nil
+    it "requires a lesson" do
+      @section.lesson = nil
       @section.wont_be :valid?
     end
   end
