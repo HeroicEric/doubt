@@ -5,6 +5,12 @@ describe Lesson do
     @lesson = FactoryGirl.build(:lesson)
   end
 
+  describe "associations" do
+    it "has many sections" do
+      @lesson.must_respond_to(:sections)
+    end
+  end
+
   context "with valid attributes" do
     it "must be valid" do
       @lesson.must_be :valid?
