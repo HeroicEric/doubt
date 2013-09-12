@@ -30,6 +30,7 @@ end
 group :development, :test do
   gem 'minitest'
   gem 'factory_girl_rails'
+  gem 'qunit-rails'
 end
 
 group :development do
