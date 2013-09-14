@@ -1,7 +1,7 @@
 <ul class="lessons">
   {{#each controller}}
     <li class="lesson">
-      {{title}}
+    {{#link-to "lesson" this}}{{title}}{{/link-to}}
     </li>
   {{/each}}
 </ul>

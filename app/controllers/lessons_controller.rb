@@ -1,6 +1,11 @@
 class LessonsController < ApplicationController
+  respond_to :html, :json
+
   def index
-    @lessons = Lesson.all
-    render json: @lessons
+    render json: Lesson.all
+  end
+
+  def show
+    render json: Lesson.find(params[:id])
   end
 end
