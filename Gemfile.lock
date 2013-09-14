@@ -149,6 +149,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  active_model_serializers
   anjlab-bootstrap-rails!
   better_errors
   binding_of_caller
