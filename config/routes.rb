@@ -17,6 +17,9 @@ Doubt::Application.routes.draw do
   resources :lessons, only: [:index, :show],
     constraints: FormatTest.new(:json)
 
+  resources :sections, only: [:index, :show],
+    constraints: FormatTest.new(:json)
+
   get '*foo', to: 'dashboard#index',
     constraints: lambda { |request|
       path = request.env["REQUEST_PATH"]

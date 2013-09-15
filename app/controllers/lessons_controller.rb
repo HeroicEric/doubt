@@ -6,6 +6,7 @@ class LessonsController < ApplicationController
   end
 
   def show
-    render json: Lesson.find(params[:id])
+    @lesson = Lesson.find(params[:id])
+    render json: @lesson, include: [:sections]
   end
 end
