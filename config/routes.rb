@@ -11,6 +11,10 @@ Doubt::Application.routes.draw do
     end
   end
 
+  get 'auth/:provider/callback', to: 'sessions#create'
+  get 'auth/failure', to: redirect('/')
+  get 'signout', to: 'sessions#destroy', as: 'signout'
+
   root 'dashboard#index',
     constraints: FormatTest.new(:html)
 

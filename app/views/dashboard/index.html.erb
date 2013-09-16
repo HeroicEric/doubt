@@ -1,0 +1,8 @@
+<%- if current_user.present? -%>
+  <%= javascript_include_tag "application" %>
+<%- else -%>
+  <h1>You should probably log in.</h1>
+
+  <%= link_to "Login with Github", "/auth/github",
+    class: "btn btn-default btn-lrg" %>
+<%- end -%>
