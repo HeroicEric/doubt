@@ -11,10 +11,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130915185525) do
+ActiveRecord::Schema.define(version: 20130918220524) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "checkpoint_completions", force: true do |t|
+    t.integer  "user_id",       null: false
+    t.integer  "checkpoint_id", null: false
+    t.datetime "completed_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "checkpoints", force: true do |t|
     t.integer  "section_id", null: false
@@ -37,8 +45,8 @@ ActiveRecord::Schema.define(version: 20130915185525) do
   add_index "identities", ["user_id"], name: "index_identities_on_user_id", using: :btree
 
   create_table "lessons", force: true do |t|
-    t.string   "title",       null: false
-    t.text     "description"
+    t.integer  "title",       null: false
+    t.string   "description"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

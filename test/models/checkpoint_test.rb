@@ -9,6 +9,10 @@ describe Checkpoint do
     it "belongs to a lesson" do
       @checkpoint.must_respond_to(:section)
     end
+
+    it "has many CheckpointCompletions" do
+      @checkpoint.must_respond_to(:checkpoint_completions)
+    end
   end
 
   context "with valid attributes" do

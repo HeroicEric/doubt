@@ -9,6 +9,10 @@ describe User do
     it "has many identities" do
       @user.must_respond_to(:identities)
     end
+
+    it "has many CheckpointCompletions" do
+      @user.must_respond_to(:checkpoint_completions)
+    end
   end
 
   context "with valid attributes" do
