@@ -1,6 +1,6 @@
 class CheckpointSerializer < ActiveModel::Serializer
   embed :id
-  attributes :id, :title, :content, :isCompleted
+  attributes :id, :title, :body, :isCompleted
 
   has_one :section, key: :section
 

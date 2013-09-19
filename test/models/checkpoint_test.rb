@@ -32,8 +32,8 @@ describe Checkpoint do
       @checkpoint.wont_be :valid?
     end
 
-    it "requires content" do
-      @checkpoint.content = nil
+    it "requires body" do
+      @checkpoint.body = nil
       @checkpoint.wont_be :valid?
     end
   end
