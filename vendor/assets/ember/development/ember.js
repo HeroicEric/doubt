@@ -1,5 +1,5 @@
 // Fetched from: http://builds.emberjs.com/ember-latest.js
-// Fetched on: 2013-09-12T06:08:25Z
+// Fetched on: 2013-09-19T05:16:29Z
 // ==========================================================================
 // Project:   Ember - JavaScript Application Framework
 // Copyright: ©2011-2013 Tilde Inc. and contributors
@@ -10,8 +10,8 @@
 // ==========================================================================
 
 
-// Version: v1.0.0-98-gb72e945
-// Last commit: b72e945 (2013-09-11 12:09:59 -0700)
+// Version: v1.0.0-133-gebda9db
+// Last commit: ebda9db (2013-09-18 06:49:35 -0700)
 
 
 (function() {
@@ -192,8 +192,8 @@ if (!Ember.testing) {
 // ==========================================================================
 
 
-// Version: v1.0.0-98-gb72e945
-// Last commit: b72e945 (2013-09-11 12:09:59 -0700)
+// Version: v1.0.0-133-gebda9db
+// Last commit: ebda9db (2013-09-18 06:49:35 -0700)
 
 
 (function() {
@@ -327,12 +327,15 @@ Ember.FEATURES = {};
   Test that a feature is enabled. Parsed by Ember's build tools to leave
   experimental features out of beta/stable builds.
 
+  You can define an `ENV.ENABLE_ALL_FEATURES` config to force all features to
+  be enabled.
+
   @method isEnabled
   @param {string} feature
 */
 
 Ember.FEATURES.isEnabled = function(feature) {
-  return Ember.FEATURES[feature];
+  return Ember.ENV.ENABLE_ALL_FEATURES || Ember.FEATURES[feature];
 };
 
 // ..........................................................
@@ -2293,6 +2296,7 @@ function suspendListeners(obj, eventNames, target, method, callback) {
   }
 
   var suspendedActions = [],
+      actionsList = [],
       eventName, actions, i, l;
 
   for (i=0, l=eventNames.length; i<l; i++) {
@@ -2303,6 +2307,7 @@ function suspendListeners(obj, eventNames, target, method, callback) {
     if (actionIndex !== -1) {
       actions[actionIndex+2] |= SUSPENDED;
       suspendedActions.push(actionIndex);
+      actionsList.push(actions);
     }
   }
 
@@ -2311,7 +2316,7 @@ function suspendListeners(obj, eventNames, target, method, callback) {
   function finalizer() {
     for (var i = 0, l = suspendedActions.length; i < l; i++) {
       var actionIndex = suspendedActions[i];
-      actions[actionIndex+2] &= ~SUSPENDED;
+      actionsList[i][actionIndex+2] &= ~SUSPENDED;
     }
   }
 
@@ -8717,7 +8722,7 @@ define("container",
         @method makeToString
 
         @param {any} factory
-        @param {string} fullNae
+        @param {string} fullName
         @return {function} toString function
       */
       makeToString: function(factory, fullName) {
@@ -10963,6 +10968,8 @@ var e_get = Ember.get,
     set = Ember.set,
     guidFor = Ember.guidFor,
     metaFor = Ember.meta,
+    propertyWillChange = Ember.propertyWillChange,
+    propertyDidChange = Ember.propertyDidChange,
     addBeforeObserver = Ember.addBeforeObserver,
     removeBeforeObserver = Ember.removeBeforeObserver,
     addObserver = Ember.addObserver,
@@ -11033,7 +11040,7 @@ function ItemPropertyObserverContext (dependentArray, index, trackedArray) {
 
 DependentArraysObserver.prototype = {
   setValue: function (newValue) {
-    this.instanceMeta.setValue(newValue);
+    this.instanceMeta.setValue(newValue, true);
   },
   getValue: function () {
     return this.instanceMeta.getValue();
@@ -11328,11 +11335,21 @@ ReduceComputedPropertyInstanceMeta.prototype = {
     }
   },
 
-  setValue: function(newValue) {
+  setValue: function(newValue, triggerObservers) {
     // This lets sugars force a recomputation, handy for very simple
     // implementations of eg max.
     if (newValue !== undefined) {
+      var fireObservers = triggerObservers && (newValue !== this.cache[this.propertyName]);
+
+      if (fireObservers) {
+        propertyWillChange(this.context, this.propertyName);
+      }
+
       this.cache[this.propertyName] = newValue;
+
+      if (fireObservers) {
+        propertyDidChange(this.context, this.propertyName);
+      }
     } else {
       delete this.cache[this.propertyName];
     }
@@ -11597,6 +11614,12 @@ ReduceComputedProperty.prototype.property = function () {
   value. It is acceptable to not return anything (ie return undefined)
   to invalidate the computation. This is generally not a good idea for
   arrayComputed but it's used in eg max and min.
+
+  Note that observers will be fired if either of these functions return a value
+  that differs from the accumulated value.  When returning an object that
+  mutates in response to array changes, for example an array that maps
+  everything from some other array (see `Ember.computed.map`), it is usually
+  important that the *same* array be returned to avoid accidentally triggering observers.
 
   Example
 
@@ -12014,16 +12037,15 @@ Ember.computed.map = function(dependentKey, callback) {
 
   ```javascript
   App.Person = Ember.Object.extend({
-    childAges: Ember.computed.mapBy('children', 'age'),
-    minChildAge: Ember.computed.min('childAges')
+    childAges: Ember.computed.mapBy('children', 'age')
   });
 
   var lordByron = App.Person.create({children: []});
-  lordByron.get('childAge'); // []
+  lordByron.get('childAges'); // []
   lordByron.get('children').pushObject({name: 'Augusta Ada Byron', age: 7});
-  lordByron.get('childAge'); // [7]
+  lordByron.get('childAges'); // [7]
   lordByron.get('children').pushObjects([{name: 'Allegra Byron', age: 5}, {name: 'Elizabeth Medora Leigh', age: 8}]);
-  lordByron.get('childAge'); // [7, 5, 8]
+  lordByron.get('childAges'); // [7, 5, 8]
   ```
 
   @method computed.mapBy
@@ -12451,7 +12473,7 @@ function binarySearch(array, item, low, high) {
   ]});
 
   todoList.get('sortedTodos'); // [{name:'Documentation', priority:3}, {name:'Release', priority:1}, {name:'Unit Test', priority:2}]
-  todoList.get('priroityTodos'); // [{name:'Release', priority:1}, {name:'Unit Test', priority:2}, {name:'Documentation', priority:3}]
+  todoList.get('priorityTodos'); // [{name:'Release', priority:1}, {name:'Unit Test', priority:2}, {name:'Documentation', priority:3}]
   ```
 
   @method computed.sort
@@ -15719,6 +15741,86 @@ var ClassMixin = Mixin.create({
 
   isMethod: false,
 
+  /**
+    Creates a new subclass.
+
+    ```javascript
+    App.Person = Ember.Object.extend({
+      say: function(thing) {
+        alert(thing);
+       }
+    });
+    ```
+
+    This defines a new subclass of Ember.Object: `App.Person`. It contains one method: `say()`.
+
+    You can also create a subclass from any existing class by calling its `extend()`  method. For example, you might want to create a subclass of Ember's built-in `Ember.View` class:
+
+    ```javascript
+    App.PersonView = Ember.View.extend({
+      tagName: 'li',
+      classNameBindings: ['isAdministrator']
+    });
+    ```
+
+    When defining a subclass, you can override methods but still access the implementation of your parent class by calling the special `_super()` method:
+
+    ```javascript
+    App.Person = Ember.Object.extend({
+      say: function(thing) {
+        var name = this.get('name');
+        alert(name + ' says: ' + thing);
+      }
+    });
+
+    App.Soldier = App.Person.extend({
+      say: function(thing) {
+        this._super(thing + ", sir!");
+      },
+      march: function(numberOfHours) {
+        alert(this.get('name') + ' marches for ' + numberOfHours + ' hours.')
+      }
+    });
+
+    var yehuda = App.Soldier.create({
+      name: "Yehuda Katz"
+    });
+
+    yehuda.say("Yes");  // alerts "Yehuda Katz says: Yes, sir!"
+    ```
+
+    The `create()` on line #17 creates an *instance* of the `App.Soldier` class. The `extend()` on line #8 creates a *subclass* of `App.Person`. Any instance of the `App.Person` class will *not* have the `march()` method.
+
+    You can also pass `Ember.Mixin` classes to add additional properties to the subclass.
+
+    ```javascript
+    App.Person = Ember.Object.extend({
+      say: function(thing) {
+        alert(this.get('name') + ' says: ' + thing);
+      }
+    });
+
+    App.SingingMixin = Ember.Mixin.create({
+      sing: function(thing){
+        alert(this.get('name') + ' sings: la la la ' + thing);
+      }
+    });
+
+    App.BroadwayStar = App.Person.extend(App.SingingMixin, {
+      dance: function() {
+        alert(this.get('name') + ' dances: tap tap tap tap ');
+      }
+    });
+    ```
+
+    The `App.BroadwayStar` class contains three methods: `say()`, `sing()`, and `dance()`.
+
+    @method extend
+    @static
+
+    @param {Ember.Mixin} [mixins]* One or more Ember.Mixin classes
+    @param {Object} [arguments]* Object containing values to use within the new class
+  */
   extend: function() {
     var Class = makeCtor(), proto;
     Class.ClassMixin = Mixin.create(this.ClassMixin);
@@ -19247,6 +19349,7 @@ var get = Ember.get, set = Ember.set;
 var guidFor = Ember.guidFor;
 var a_forEach = Ember.EnumerableUtils.forEach;
 var a_addObject = Ember.EnumerableUtils.addObject;
+var meta = Ember.meta;
 
 var childViewsProperty = Ember.computed(function() {
   var childViews = this._childViews, ret = Ember.A(), view = this;
@@ -20995,12 +21098,6 @@ Ember.View = Ember.CoreView.extend(
     return viewCollection;
   },
 
-  _elementWillChange: Ember.beforeObserver(function() {
-    this.forEachChildView(function(view) {
-      Ember.propertyWillChange(view, 'element');
-    });
-  }, 'element'),
-
   /**
     @private
 
@@ -21012,7 +21109,7 @@ Ember.View = Ember.CoreView.extend(
   */
   _elementDidChange: Ember.observer(function() {
     this.forEachChildView(function(view) {
-      Ember.propertyDidChange(view, 'element');
+      delete meta(view).cache.element;
     });
   }, 'element'),
 
@@ -21460,6 +21557,7 @@ Ember.View = Ember.CoreView.extend(
 
     if (priorState && priorState.exit) { priorState.exit(this); }
     if (currentState.enter) { currentState.enter(this); }
+    if (state === 'inDOM') { delete Ember.meta(this).cache.element; }
 
     if (children !== false) {
       this.forEachChildView(function(view) {
@@ -21807,10 +21905,18 @@ Ember.merge(preRender, {
     var viewCollection = view.viewHierarchyCollection();
 
     viewCollection.trigger('willInsertElement');
-    // after createElement, the view will be in the hasElement state.
+
     fn.call(view);
-    viewCollection.transitionTo('inDOM', false);
-    viewCollection.trigger('didInsertElement');
+
+    // We transition to `inDOM` if the element exists in the DOM
+    var element = view.get('element');
+    while (element = element.parentNode) {
+      if (element === document) {
+        viewCollection.transitionTo('inDOM', false);
+        viewCollection.trigger('didInsertElement');
+      }
+    }
+
   },
 
   renderToBufferIfNeeded: function(view, buffer) {
@@ -27013,7 +27119,7 @@ var get = Ember.get, set = Ember.set;
 Ember.TextSupport = Ember.Mixin.create({
   value: "",
 
-  attributeBindings: ['placeholder', 'disabled', 'maxlength', 'tabindex'],
+  attributeBindings: ['placeholder', 'disabled', 'maxlength', 'tabindex', 'readonly'],
   placeholder: null,
   disabled: false,
   maxlength: null,
@@ -27849,7 +27955,7 @@ function program7(depth0,data) {
     The `disabled` attribute of the select element. Indicates whether
     the element is disabled from interactions.
 
-    @property multiple
+    @property disabled
     @type Boolean
     @default false
   */
@@ -28209,6 +28315,7 @@ function normalizeHash(hash, hashTypes) {
 * `tabindex`
 * `indeterminate`
 * `name`
+
 
   When set to a quoted string, these values will be directly applied to the HTML
   element. When left unquoted, these values will be bound to a property on the
@@ -32822,7 +32929,7 @@ Ember.onLoad('Ember.Handlebars', function(Handlebars) {
     To override this option for your entire application, see
     "Overriding Application-wide Defaults".
     
-    ### Disabling the `link-to` heper
+    ### Disabling the `link-to` helper
     By default `{{link-to}}` is enabled. 
     any passed value to `disabled` helper property will disable the `link-to` helper.
      
@@ -34235,6 +34342,19 @@ Ember.HashLocation = Ember.Object.extend({
     @method getURL
   */
   getURL: function() {
+    if (Ember.FEATURES.isEnabled("query-params")) {
+      // location.hash is not used because it is inconsistently
+      // URL-decoded between browsers.
+      var href = get(this, 'location').href,
+        hashIndex = href.indexOf('#');
+
+      if ( hashIndex === -1 ) {
+        return "";
+      } else {
+        return href.substr(hashIndex + 1);
+      }
+    }
+    // Default implementation without feature flag enabled
     return get(this, 'location').hash.substr(1);
   },
 
@@ -34383,10 +34503,16 @@ Ember.HistoryLocation = Ember.Object.extend({
   */
   getURL: function() {
     var rootURL = get(this, 'rootURL'),
-        url = get(this, 'location').pathname;
+        location = get(this, 'location'),
+        path = location.pathname;
 
     rootURL = rootURL.replace(/\/$/, '');
-    url = url.replace(rootURL, '');
+    var url = path.replace(rootURL, '');
+
+    if (Ember.FEATURES.isEnabled("query-params")) {
+      var search = location.search || '';
+      url += search;
+    }
 
     return url;
   },
@@ -35364,13 +35490,15 @@ var Application = Ember.Application = Ember.Namespace.extend(Ember.DeferredMixin
     ```javascript
     App = Ember.Application.create();
 
-    App.Person = Ember.Object.extend({});
-    App.Orange = Ember.Object.extend({});
-    App.Email  = Ember.Object.extend({});
+    App.Person  = Ember.Object.extend({});
+    App.Orange  = Ember.Object.extend({});
+    App.Email   = Ember.Object.extend({});
+    App.Session = Ember.Object.create({});
 
     App.register('model:user', App.Person, {singleton: false });
     App.register('fruit:favorite', App.Orange);
     App.register('communication:main', App.Email, {singleton: false});
+    App.register('session', App.Session, {instantiate: false});
     ```
 
     @method register
