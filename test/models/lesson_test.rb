@@ -9,6 +9,10 @@ describe Lesson do
     it "has many sections" do
       @lesson.must_respond_to(:sections)
     end
+
+    it "has many checkpoints" do
+      @lesson.must_respond_to(:checkpoints)
+    end
   end
 
   context "with valid attributes" do

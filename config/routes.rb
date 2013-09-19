@@ -21,7 +21,10 @@ Doubt::Application.routes.draw do
   resources :lessons, only: [:index, :show],
     constraints: FormatTest.new(:json)
 
-  resources :sections, only: [:index, :show],
+  resources :sections, only: [:index],
+    constraints: FormatTest.new(:json)
+
+  resources :checkpoints, only: [:index],
     constraints: FormatTest.new(:json)
 
   get '*foo', to: 'dashboard#index',

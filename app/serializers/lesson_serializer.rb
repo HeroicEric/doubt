@@ -5,4 +5,5 @@ class LessonSerializer < ActiveModel::Serializer
   attributes :id, :title, :description
 
   has_many :sections, key: :sections
+  has_many :checkpoints, key: :checkpoints
 end
