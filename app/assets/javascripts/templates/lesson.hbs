@@ -7,4 +7,12 @@
 {{#each sections}}
   <h2>{{title}}</h2>
   {{description}}
+
+  {{#each checkpoints itemController="checkpoint"}}
+    <h3>{{title}}</h3>
+    <p>{{body}}<p>
+
+    {{view Ember.Checkbox checkedBinding="isCompleted"}}
+    <label>Got it?</label>
+  {{/each}}
 {{/each}}

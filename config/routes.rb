@@ -27,6 +27,9 @@ Doubt::Application.routes.draw do
   resources :checkpoints, only: [:index],
     constraints: FormatTest.new(:json)
 
+  resources :checkpoint_completions, only: [:create],
+    constraints: FormatTest.new(:json)
+
   get '*foo', to: 'dashboard#index',
     constraints: lambda { |request|
       path = request.env["REQUEST_PATH"]

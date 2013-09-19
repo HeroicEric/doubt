@@ -1,11 +1,11 @@
 class CheckpointSerializer < ActiveModel::Serializer
   embed :id
-  attributes :id, :title, :body, :isCompleted
+  attributes :id, :title, :body, :is_completed
 
-  has_one :section, key: :section
+  has_one :section
 
   # TODO: Don't do this when serializing a bunch of checkpoints at once
-  def isCompleted
-    !object.user_checkpoints.where("user_id = ? AND completed_at IS NOT NULL", current_user.id).empty?
+  def is_completed
+    !object.checkpoint_completions.where(user_id: current_user.id).empty?
   end
 end
