@@ -13,6 +13,10 @@ describe Lesson do
     it "has many checkpoints" do
       @lesson.must_respond_to(:checkpoints)
     end
+
+    it "has many checkpoint completions" do
+      @lesson.must_respond_to(:checkpoint_completions)
+    end
   end
 
   context "with valid attributes" do
