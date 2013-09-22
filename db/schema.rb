@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130919040845) do
+ActiveRecord::Schema.define(version: 20130919055757) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -23,6 +23,8 @@ ActiveRecord::Schema.define(version: 20130919040845) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "checkpoint_completions", ["user_id", "checkpoint_id"], name: "index_checkpoint_completions_on_user_id_and_checkpoint_id", unique: true, using: :btree
 
   create_table "checkpoints", force: true do |t|
     t.integer  "section_id", null: false

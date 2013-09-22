@@ -7,4 +7,5 @@ class CheckpointCompletion < ActiveRecord::Base
 
   validates_presence_of :user
   validates_presence_of :checkpoint
+  validates_uniqueness_of :user_id, scope: :checkpoint_id
 end

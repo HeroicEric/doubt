@@ -31,5 +31,15 @@ describe CheckpointCompletion do
       @checkpoint_completion.checkpoint = nil
       @checkpoint_completion.wont_be :valid?
     end
+
+    describe "uniqueness" do
+      it "can only have one completion per checkpoint, per user" do
+        @checkpoint_completion.save
+        dupe_checkpoint = FactoryGirl.build(:checkpoint_completion,
+          user: @checkpoint_completion.user,
+          checkpoint: @checkpoint_completion.checkpoint)
+        dupe_checkpoint.wont_be :valid?
+      end
+    end
   end
 end
