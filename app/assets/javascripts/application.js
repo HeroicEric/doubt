@@ -21,4 +21,7 @@
 // for more details see: http://emberjs.com/guides/application/
 App = Ember.Application.create();
 
+App.ApplicationAdapter = DS.ActiveModelAdapter.extend()
+App.ApplicationSerializer = DS.ActiveModelSerializer.extend()
+
 //= require_tree .
