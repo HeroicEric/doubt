@@ -1,11 +1,22 @@
 App.CheckpointController = Ember.ObjectController.extend
-  isCompleted: ((key, value) ->
-    model = @get("model")
-    if value is `undefined`
-      model.get "isCompleted"
-    else
-      model.set "isCompleted", value
-      completion = @store.createRecord('checkpointCompletion', checkpoint: model)
+  actions:
+    markComplete: ->
+      # TODO: Remove explicit reference to user 1
+      userCompletion = @store.createRecord( 'checkpointCompletion',
+        checkpoint: @get('model'), userId: 1)
+      userCompletion.save()
+
+    markIncomplete: ->
+      completion = @get('userCompletion')
+      completion.deleteRecord()
       completion.save()
-      value
-  ).property()
+
+  isCompleted: (->
+    !!@get('userCompletion')
+  ).property('checkpointCompletions.@each')
+
+  userCompletion: (->
+    # TODO: Remove explicit reference to user 1
+    @get('checkpointCompletions').findBy('userId', 1)
+  ).property('checkpointCompletions.@each')
+

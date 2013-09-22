@@ -7,6 +7,7 @@ class LessonsController < ApplicationController
 
   def show
     @lesson = Lesson.find(params[:id])
-    render json: @lesson, include: [:sections, :checkpoints]
+    render json: @lesson,
+      include: [:sections, :checkpoints, :checkpoint_completions]
   end
 end

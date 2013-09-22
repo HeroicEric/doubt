@@ -1,20 +1,14 @@
-module "User views a Lesson",
+module "User views Lessons index",
   setup: ->
     App.Lesson.FIXTURES = [
       id: 1
       title: "Intro to Ruby"
-      description: "I love Ruby and so should you"
-      sections: [1, 2]
-    ]
-
-    App.Section.FIXTURES = [
-      id: 1
-      lesson: 1
-      title: "Variables"
     ,
       id: 2
-      lesson: 1
-      title: "Loops"
+      title: "Intro to Ember"
+    ,
+      id: 3
+      title: "Intro to Javascripz"
     ]
 
     Ember.run App, App.advanceReadiness
@@ -22,17 +16,9 @@ module "User views a Lesson",
   teardown: ->
     App.reset()
 
-test "Lesson information is shown", ->
+test "All of the Lessons are listed", ->
   expect 2
 
-  visit("/lessons/1").then ->
-    ok hasContent("Intro to Ruby"), "Title found"
-    ok hasContent("I love Ruby and so should you"),
-      "Description found"
-
-test "Lesson sections are shown", ->
-  expect 2
-
-  visit("/lessons/1").then ->
-    ok hasContent("Variables"), "Found first section"
-    ok hasContent("Loops"), "Found second section"
+  visit("/").then ->
+    ok hasContent("Intro to Ruby"), "Can't find content"
+    equal $('.lesson').length, 3

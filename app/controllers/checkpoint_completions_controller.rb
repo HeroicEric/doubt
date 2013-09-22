@@ -1,6 +1,11 @@
 class CheckpointCompletionsController < ApplicationController
   respond_to :html, :json
 
+  def show
+    checkpoint_completion = CheckpointCompletion.find(params[:id])
+    render json: checkpoint_completion
+  end
+
   def create
     checkpoint_completion = CheckpointCompletion.new(
       checkpoint_completion_params)
@@ -11,6 +16,11 @@ class CheckpointCompletionsController < ApplicationController
     else
       render status: 422
     end
+  end
+
+  def destroy
+    CheckpointCompletion.find(params[:id]).destroy
+    render nothing: true
   end
 
   private

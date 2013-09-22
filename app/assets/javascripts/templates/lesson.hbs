@@ -12,7 +12,10 @@
     <h3>{{title}}</h3>
     <p>{{body}}<p>
 
-    {{view Ember.Checkbox checkedBinding="isCompleted"}}
-    <label>Got it?</label>
+    {{#if isCompleted}}
+      <button class="btn btn-xs btn-success" {{action "markIncomplete"}}>Complete</button>
+    {{else}}
+      <button class="btn btn-xs btn-danger" {{action "markComplete" }}>Incomplete</button>
+    {{/if}}
   {{/each}}
 {{/each}}
