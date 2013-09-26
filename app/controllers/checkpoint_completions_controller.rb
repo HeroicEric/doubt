@@ -1,6 +1,14 @@
 class CheckpointCompletionsController < ApplicationController
   respond_to :html, :json
 
+  def index
+    if params[:ids]
+      render json: CheckpointCompletion.find(params[:ids])
+    else
+      render json: CheckpointCompletion.all
+    end
+  end
+
   def show
     checkpoint_completion = CheckpointCompletion.find(params[:id])
     render json: checkpoint_completion

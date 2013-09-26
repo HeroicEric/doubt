@@ -27,7 +27,7 @@ Doubt::Application.routes.draw do
   resources :checkpoints, only: [:index],
     constraints: FormatTest.new(:json)
 
-  resources :checkpoint_completions, only: [:show, :create, :destroy],
+  resources :checkpoint_completions, only: [:index, :show, :create, :destroy],
     constraints: FormatTest.new(:json)
 
   get '*foo', to: 'dashboard#index',
