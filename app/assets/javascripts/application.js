@@ -15,6 +15,7 @@
 //= require handlebars
 //= require ember
 //= require ember-data
+//= require showdown
 //= require_self
 //= require doubt
 

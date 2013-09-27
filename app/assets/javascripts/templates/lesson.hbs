@@ -2,15 +2,15 @@
 
 <h1>{{title}}</h1>
 
-{{description}}
+{{format-markdown description}}
 
 {{#each sections}}
   <h2>{{title}}</h2>
-  {{description}}
+  {{format-markdown description}}
 
   {{#each checkpoints itemController="checkpoint"}}
     <h3>{{title}}</h3>
-    <p>{{body}}<p>
+    <p>{{format-markdown body}}<p>
 
     {{#if isCompleted}}
       <button class="btn btn-xs btn-success" {{action "markIncomplete"}}>Complete</button>
