@@ -42,8 +42,25 @@
   {{/if}}
 
   {{#each checkpoints itemController="checkpoint"}}
-    <h3>{{title}}</h3>
-    <p>{{format-markdown body}}<p>
+    <h3>
+      {{title}}
+
+      {{#if isEditing}}
+        <button class="btn btn-xs" {{action "save"}}>
+          <i class="glyphicon glyphicon-edit"></i> Done Editing
+        </button>
+      {{else}}
+        <button class="btn btn-xs" {{action "edit"}}>
+          <i class="glyphicon glyphicon-edit"></i> Edit
+        </button>
+      {{/if}}
+    </h3>
+
+    {{#if isEditing}}
+      {{textarea value=body rows="7" class="form-control"}}
+    {{else}}
+      {{format-markdown body}}
+    {{/if}}
 
     {{#if isCompleted}}
       <button class="btn btn-xs btn-success" {{action "markIncomplete"}}>Complete</button>
