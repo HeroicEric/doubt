@@ -21,7 +21,7 @@ Doubt::Application.routes.draw do
   resources :lessons, only: [:index, :show, :update],
     constraints: FormatTest.new(:json)
 
-  resources :sections, only: [:index],
+  resources :sections, only: [:index, :update],
     constraints: FormatTest.new(:json)
 
   resources :checkpoints, only: [:index, :update],
