@@ -2,9 +2,11 @@ App.CheckpointController = Ember.ObjectController.extend
   actions:
     markComplete: ->
       # TODO: Remove explicit reference to user 1
+      checkpoint = @get('model')
       userCompletion = @store.createRecord( 'checkpointCompletion',
-        checkpoint: @get('model'), userId: 1)
-      userCompletion.save()
+        checkpoint: checkpoint, userId: 1)
+      userCompletion.save().then ->
+        checkpoint.save()
 
     markIncomplete: ->
       completion = @get('userCompletion')
@@ -19,4 +21,3 @@ App.CheckpointController = Ember.ObjectController.extend
     # TODO: Remove explicit reference to user 1
     @get('checkpointCompletions').findBy('userId', 1)
   ).property('checkpointCompletions.@each')
-

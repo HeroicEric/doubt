@@ -24,7 +24,7 @@ Doubt::Application.routes.draw do
   resources :sections, only: [:index],
     constraints: FormatTest.new(:json)
 
-  resources :checkpoints, only: [:index],
+  resources :checkpoints, only: [:index, :update],
     constraints: FormatTest.new(:json)
 
   resources :checkpoint_completions, only: [:index, :show, :create, :destroy],
