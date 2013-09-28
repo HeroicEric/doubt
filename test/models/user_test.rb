@@ -1,59 +1,39 @@
 require "test_helper"
 
 describe User do
-  before do
-    @user = FactoryGirl.build(:user)
+  subject { User.new }
+
+  it { must have_valid(:first_name).when('Eric', 'Othername') }
+  it { wont have_valid(:first_name).when(nil, '') }
+
+  it { must have_valid(:last_name).when('Kelly', 'Othername') }
+  it { wont have_valid(:last_name).when(nil, '') }
+
+  it { must have_valid(:role).when('user', 'admin') }
+  it { wont have_valid(:role).when(nil, '', 'anotherrole') }
+
+  it { must have_valid(:username).when('usErname12', 'user_name') }
+  it { wont have_valid(:username).when(nil, '', '!!@#$%^') }
+
+  describe "email" do
+    it { must have_valid(:email).when('heroic@eric.com', 'guy12@aol.org') }
+    it { wont have_valid(:email).when(nil, '') }
+
+    it "must be unique" do
+      email = "hello@aol.com"
+      FactoryGirl.create(:user, email: email)
+      subject.email = email
+      subject.wont_be :valid?
+    end
   end
 
   describe "associations" do
     it "has many identities" do
-      @user.must_respond_to(:identities)
+      subject.must_respond_to(:identities)
     end
 
     it "has many CheckpointCompletions" do
-      @user.must_respond_to(:checkpoint_completions)
-    end
-  end
-
-  context "with valid attributes" do
-    it "must be valid" do
-      @user.must_be :valid?
-    end
-  end
-
-  describe "validations" do
-    it "requires a first name" do
-      @user.first_name = nil
-      @user.wont_be :valid?
-    end
-
-    it "requires a last name" do
-      @user.last_name = nil
-      @user.wont_be :valid?
-    end
-
-    it "requires a role" do
-      @user.role = nil
-      @user.wont_be :valid?
-    end
-
-    it "requires a username" do
-      @user.username = nil
-      @user.wont_be :valid?
-    end
-
-    describe "email" do
-      it "requires an email" do
-        @user.email = nil
-        @user.wont_be :valid?
-      end
-
-      it "must be unique" do
-        email = "hello@aol.com"
-        FactoryGirl.create(:user, email: email)
-        @user.email = email
-        @user.wont_be :valid?
-      end
+      subject.must_respond_to(:checkpoint_completions)
     end
   end
 end
