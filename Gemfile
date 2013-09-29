@@ -36,6 +36,8 @@ end
 group :development, :test do
   gem 'dotenv-rails'
   gem 'minitest'
+  gem 'minitest-matchers'
+  gem 'valid_attribute'
   gem 'factory_girl_rails'
   gem 'qunit-rails'
   gem 'pry'

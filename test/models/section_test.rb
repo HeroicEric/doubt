@@ -1,31 +1,17 @@
 require "test_helper"
 
 describe Section do
-  before do
-    @section = FactoryGirl.build(:section)
-  end
+  subject { Section.new }
+
+  it { must have_valid(:title).when('Great Gatsby', 'Poppers Penguins') }
+  it { wont have_valid(:title).when(nil, '') }
+
+  it { must have_valid(:lesson).when(Lesson.new) }
+  it { wont have_valid(:lesson).when(nil) }
 
   describe "associations" do
     it "belongs to a lesson" do
-      @section.must_respond_to(:lesson)
-    end
-  end
-
-  context "with valid attributes" do
-    it "must be valid" do
-      @section.must_be :valid?
-    end
-  end
-
-  describe "validations" do
-    it "requires a title" do
-      @section.title = nil
-      @section.wont_be :valid?
-    end
-
-    it "requires a lesson" do
-      @section.lesson = nil
-      @section.wont_be :valid?
+      subject.must_respond_to(:lesson)
     end
   end
 end

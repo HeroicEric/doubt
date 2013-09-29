@@ -1,34 +1,22 @@
 require "test_helper"
 
 describe Lesson do
-  before do
-    @lesson = FactoryGirl.build(:lesson)
-  end
+  subject { Lesson.new }
+
+  it { must have_valid(:title).when('Great Gatsby', 'Poppers Penguins') }
+  it { wont have_valid(:title).when(nil, '') }
 
   describe "associations" do
     it "has many sections" do
-      @lesson.must_respond_to(:sections)
+      subject.must_respond_to(:sections)
     end
 
     it "has many checkpoints" do
-      @lesson.must_respond_to(:checkpoints)
+      subject.must_respond_to(:checkpoints)
     end
 
     it "has many checkpoint completions" do
-      @lesson.must_respond_to(:checkpoint_completions)
-    end
-  end
-
-  context "with valid attributes" do
-    it "must be valid" do
-      @lesson.must_be :valid?
-    end
-  end
-
-  describe "validations" do
-    it "requires a title" do
-      @lesson.title = nil
-      @lesson.wont_be :valid?
+      subject.must_respond_to(:checkpoint_completions)
     end
   end
 end
