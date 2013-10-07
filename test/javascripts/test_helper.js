@@ -14,10 +14,32 @@ App.ApplicationAdapter = DS.FixtureAdapter.extend();
 App.setupForTesting();
 App.injectTestHelpers();
 
+// Helpers
+
+// Expectations
 function exists(selector) {
   return !!find(selector).length;
 }
 
 function hasContent(content) {
   return !!find('*:contains(' + content + ')').length;
+}
+
+// Authentication Helper
+window.preload = {}
+
+function createUser() {
+  user = {
+    id: 1,
+    firstName: 'Eric',
+    lastName: 'Kelly',
+    username: 'HeroicEric'
+  }
+
+  return user;
+}
+
+function preloadCurrentUser(user) {
+  if (user === undefined) user = createUser();
+  window.preload.currentUser = user
 }

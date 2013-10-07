@@ -1,5 +1,7 @@
 module "User views a Lesson",
   setup: ->
+    preloadCurrentUser()
+
     App.Lesson.FIXTURES = [
       id: 1
       title: "Intro to Ruby"

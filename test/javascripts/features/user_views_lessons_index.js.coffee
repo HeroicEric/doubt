@@ -1,5 +1,7 @@
 module "User views Lessons index",
   setup: ->
+    preloadCurrentUser()
+
     App.Lesson.FIXTURES = [
       id: 1
       title: "Intro to Ruby"
@@ -19,6 +21,6 @@ module "User views Lessons index",
 test "All of the Lessons are listed", ->
   expect 2
 
-  visit("/").then ->
+  visit("/lessons").then ->
     ok hasContent("Intro to Ruby"), "Can't find content"
     equal $('.lesson').length, 3
