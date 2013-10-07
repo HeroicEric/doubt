@@ -1,5 +1,8 @@
 App.Router.map ()->
-  @resource 'lessons', path: '/'
-  @resource 'lesson', path: '/lessons/:lesson_id'
+  @resource 'authenticated', path: '/', ->
+    @resource 'lessons'
+    @resource 'lesson', path: '/lessons/:lesson_id'
+
+  @resource 'login'
 
 App.Router.reopen location: "history"
