@@ -1,5 +1,13 @@
 App.CheckpointController = Ember.ObjectController.extend
+  isEditing: false
+
   actions:
+    edit: ->
+      @set 'isEditing', true
+    save: ->
+      @set 'isEditing', false
+      @get('model').save()
+
     markComplete: ->
       # TODO: Remove explicit reference to user 1
       checkpoint = @get('model')

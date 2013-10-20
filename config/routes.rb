@@ -18,10 +18,10 @@ Doubt::Application.routes.draw do
   root 'dashboard#index',
     constraints: FormatTest.new(:html)
 
-  resources :lessons, only: [:index, :show],
+  resources :lessons, only: [:index, :show, :update],
     constraints: FormatTest.new(:json)
 
-  resources :sections, only: [:index],
+  resources :sections, only: [:index, :update],
     constraints: FormatTest.new(:json)
 
   resources :checkpoints, only: [:index, :update],

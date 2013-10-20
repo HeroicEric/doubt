@@ -6,6 +6,8 @@ describe Lesson do
   it { must have_valid(:title).when('Great Gatsby', 'Poppers Penguins') }
   it { wont have_valid(:title).when(nil, '') }
 
+  it { must have_valid(:description).when(nil, '', 'Learn awesome stuff') }
+
   describe "associations" do
     it "has many sections" do
       subject.must_respond_to(:sections)

@@ -9,6 +9,8 @@ describe Section do
   it { must have_valid(:lesson).when(Lesson.new) }
   it { wont have_valid(:lesson).when(nil) }
 
+  it { must have_valid(:description).when(nil, '', 'Learn awesome stuff') }
+
   describe "associations" do
     it "belongs to a lesson" do
       subject.must_respond_to(:lesson)
