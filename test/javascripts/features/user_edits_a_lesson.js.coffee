@@ -45,12 +45,40 @@ test "Lesson description is edited", ->
   expect 1
 
   visit("/lessons/1").then(->
-    click 'button.btn-edit'
+    click 'h1 button.btn-edit'
   ).then(->
-    fillIn '.form-control-section-body', 'An awesome new description'
+    fillIn '.form-control-lesson-description', '### An awesome new description'
   ).then(->
     click 'h1 button.btn-save'
   ).then(->
-    ok find("p:contains('An awesome new description')").length,
+    ok find("h3:contains('An awesome new description')").length,
       "The the new description should display"
+  )
+
+test "Section description is edited", ->
+  expect 1
+
+  visit("/lessons/1").then(->
+    click 'h2 button.btn-edit'
+  ).then(->
+    fillIn '.form-control-section-description', '### An awesome new description'
+  ).then(->
+    click 'h2 button.btn-save'
+  ).then(->
+    ok find("h3:contains('An awesome new description')").length,
+      "The the new description should display"
+  )
+
+test "Checkpoint description is edited", ->
+  expect 1
+
+  visit("/lessons/1").then(->
+    click 'h3 button.btn-edit'
+  ).then(->
+    fillIn '.form-control-checkpoint-body', '### An awesome new body'
+  ).then(->
+    click 'h3 button.btn-save'
+  ).then(->
+    ok find("h3:contains('An awesome new body')").length,
+      "The the new description body display"
   )
